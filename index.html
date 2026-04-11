@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spokes AI Agents | Knowledge26 Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #061525;
+      color: #e8f4f8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .header-img, .footer-img {
+      width: 100%;
+      display: block;
+      flex-shrink: 0;
+    }
+    .game-card {
+      background: rgba(10,31,51,0.85);
+      border: 1px solid rgba(98,216,78,0.15);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      padding: 32px 24px;
+      box-shadow: 0 0 20px rgba(98,216,78,0.25);
+      max-width: 420px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .game-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e8f4f8;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    .status {
+      font-size: 1.1rem;
+      color: #7a9bb5;
+      margin-bottom: 18px;
+      min-height: 24px;
+      text-align: center;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(3, 60px);
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .cell {
+      background: rgba(6,21,37,0.8);
+      border: 1px solid rgba(98,216,78,0.2);
+      color: #e8f4f8;
+      border-radius: 8px;
+      font-size: 2.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 8px rgba(98,216,78,0.08);
+    }
+    .cell:hover {
+      background: #0e2d47;
+      box-shadow: 0 0 12px #62d84e;
+    }
+    .restart-btn {
+      background: linear-gradient(135deg, #62d84e, #00c7b1);
+      color: #061525;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 12px 24px;
+      border: none;
+      font-size: 1rem;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 0 8px #00c7b1;
+    }
+    .restart-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 16px #62d84e;
+    }
+    @media (max-width: 600px) {
+      .game-card {
+        padding: 18px 6px;
+        max-width: 98vw;
+      }
+      .board {
+        grid-template-columns: repeat(3, 40px);
+        grid-template-rows: repeat(3, 40px);
+        gap: 5px;
+      }
+      .cell {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.png" class="header-img" alt="Header" style="min-height:200px; background:#061525;" />
+  <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
+    <div class="game-card">
+      <div class="game-title">Tic-Tac-Toe 🧞</div>
+      <div class="status" id="status"></div>
+      <div class="board" id="board">
+        <div class="cell" id="cell-0"></div>
+        <div class="cell" id="cell-1"></div>
+        <div class="cell" id="cell-2"></div>
+        <div class="cell" id="cell-3"></div>
+        <div class="cell" id="cell-4"></div>
+        <div class="cell" id="cell-5"></div>
+        <div class="cell" id="cell-6"></div>
+        <div class="cell" id="cell-7"></div>
+        <div class="cell" id="cell-8"></div>
+      </div>
+      <button class="restart-btn" id="restart">Restart Game</button>
+    </div>
+  </div>
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.png" class="footer-img" alt="Footer" style="min-height:40px; background:#0a1f33;" />
+  <script>
+    // Tic-Tac-Toe Game Logic
+    const board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    let gameActive = true;
+    const statusDiv = document.getElementById('status');
+    const cells = Array.from({length:9}, (_,i) => document.getElementById('cell-'+i));
+    const restartBtn = document.getElementById('restart');
+    const taunts = [
+      "Try to beat the Genie! 🧞",
+      "Can you outsmart the AI?",
+      "X marks the spot!",
+      "O is on the move!",
+      "May the best player win!",
+      "It's your turn!",
+      "AI is thinking...",
+      "Draw? Not today!",
+      "Victory is near!"
+    ];
+    function randomTaunt() {
+      return taunts[Math.floor(Math.random()*taunts.length)];
+    }
+    function renderBoard() {
+      cells.forEach((cell, idx) => {
+        cell.textContent = board[idx] || '';
+        cell.style.pointerEvents = gameActive && !board[idx] ? 'auto' : 'none';
+      });
+    }
+    function checkWinner(b) {
+      const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      for (let line of lines) {
+        const [a,b1,c] = line;
+        if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
+          return b[a];
+        }
+      }
+      return b.every(cell => cell) ? 'draw' : null;
+    }
+    function updateStatus() {
+      const winner = checkWinner(board);
+      if (winner === 'X') {
+        statusDiv.textContent = "You win! 🎉";
+        gameActive = false;
+      } else if (winner === 'O') {
+        statusDiv.textContent = "Genie wins! 🧞✨";
+        gameActive = false;
+      } else if (winner === 'draw') {
+        statusDiv.textContent = "It's a draw! 🤝";
+        gameActive = false;
+      } else {
+        statusDiv.textContent = currentPlayer === 'X' ? randomTaunt() : "AI is thinking...";
+      }
+    }
+    function playerMove(idx) {
+      if (!gameActive || board[idx]) return;
+      board[idx] = 'X';
+      renderBoard();
+      updateStatus();
+      if (gameActive) {
+        setTimeout(aiMove, 500);
+      }
+    }
+    function aiMove() {
+      // AI strategy: win → block → center → corner → random
+      let move = findBestMove('O') || findBestMove('X') || pickCenter() || pickCorner() || pickRandom();
+      if (move !== null) {
+        board[move] = 'O';
+        renderBoard();
+        updateStatus();
+      }
+    }
+    function findBestMove(player) {
+      const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      for (let line of lines) {
+        const [a,b,c] = line;
+        const vals = [board[a],board[b],board[c]];
+        if (vals.filter(v=>v===player).length===2 && vals.includes(null)) {
+          return line[vals.indexOf(null)];
+        }
+      }
+      return null;
+    }
+    function pickCenter() {
+      return board[4]===null ? 4 : null;
+    }
+    function pickCorner() {
+      const corners = [0,2,6,8];
+      for (let c of corners) {
+        if (board[c]===null) return c;
+      }
+      return null;
+    }
+    function pickRandom() {
+      const empty = board.map((v,i)=>v===null?i:null).filter(v=>v!==null);
+      if (empty.length===0) return null;
+      return empty[Math.floor(Math.random()*empty.length)];
+    }
+    cells.forEach((cell, idx) => {
+      cell.addEventListener('click', () => {
+        if (currentPlayer==='X' && gameActive) {
+          playerMove(idx);
+          currentPlayer = 'O';
+          if (gameActive) setTimeout(()=>{currentPlayer='X'; updateStatus();}, 600);
+        }
+      });
+    });
+    restartBtn.addEventListener('click', () => {
+      for(let i=0;i<9;i++) board[i]=null;
+      currentPlayer = 'X';
+      gameActive = true;
+      renderBoard();
+      updateStatus();
+    });
+    // Initial render
+    renderBoard();
+    updateStatus();
+  </script>
+</body>
+</html>
