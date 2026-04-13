@@ -29,30 +29,14 @@
       padding: 32px 24px;
       max-width: 400px;
       width: 100%;
+      text-align: center;
       box-shadow: 0 0 20px rgba(98,216,78,0.25);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
     .game-title {
       font-size: 2rem;
       font-weight: 700;
-      color: #62d84e;
       margin-bottom: 16px;
-      text-align: center;
-    }
-    .game-desc {
-      color: #7a9bb5;
-      font-size: 1rem;
-      margin-bottom: 24px;
-      text-align: center;
-    }
-    .choices {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      margin-bottom: 20px;
+      color: #62d84e;
     }
     .choice-btn {
       background: linear-gradient(135deg, #62d84e, #00c7b1);
@@ -60,111 +44,101 @@
       font-weight: 700;
       border-radius: 10px;
       padding: 12px 24px;
+      margin: 12px 8px;
       border: none;
       cursor: pointer;
-      font-size: 1rem;
-      transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 2px 8px rgba(98,216,78,0.15);
+      font-size: 1.1rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px #00c7b1;
     }
     .choice-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 0 20px #62d84e;
     }
-    .result {
-      font-size: 1.2rem;
-      color: #e8f4f8;
-      margin-top: 16px;
-      min-height: 32px;
-      text-align: center;
-    }
-    .restart-btn {
+    .animation {
       margin-top: 24px;
-      background: linear-gradient(135deg, #00c7b1, #62d84e);
-      color: #061525;
-      font-weight: 700;
-      border-radius: 10px;
-      padding: 10px 22px;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: transform 0.1s, box-shadow 0.1s;
-      box-shadow: 0 2px 8px rgba(98,216,78,0.15);
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .restart-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px #00c7b1;
+    .aladdin-fly {
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 40px 40px, #62d84e 60%, #00c7b1 100%);
+      border-radius: 50%;
+      position: relative;
+      animation: fly 1.2s ease-in-out;
+    }
+    @keyframes fly {
+      0% { transform: translateY(60px) scale(0.7); opacity: 0.5; }
+      60% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .genie-pop {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #00c7b1 60%, #62d84e 100%);
+      border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+      position: relative;
+      animation: pop 1.2s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0.5; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .status {
+      color: #7a9bb5;
+      font-size: 1rem;
+      margin-top: 12px;
+      min-height: 24px;
     }
     @media (max-width: 600px) {
-      .game-card {
-        padding: 18px 8px;
-        max-width: 98vw;
-      }
-      .game-title {
-        font-size: 1.3rem;
-      }
+      .game-card { padding: 16px 8px; }
+      .game-title { font-size: 1.3rem; }
+      .animation { min-height: 80px; }
     }
   </style>
 </head>
 <body>
-
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header"
-       style="min-height:140px; background:#061525;" />
-
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px; background:#061525;" />
   <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
     <div class="game-card">
-      <div class="game-title">Aladdin & Genie: Wish Game</div>
-      <div class="game-desc">Aladdin meets Genie! Choose a wish and see what Genie grants. Can you find the magic outcome?</div>
-      <div class="choices" id="choices"></div>
-      <div class="result" id="result"></div>
-      <button class="restart-btn" id="restartBtn" style="display:none;">Restart</button>
+      <div class="game-title">Aladdin & Genie Game</div>
+      <div class="status" id="status">Choose your adventure!</div>
+      <button class="choice-btn" id="aladdinBtn">Ride the Magic Carpet</button>
+      <button class="choice-btn" id="genieBtn">Summon the Genie</button>
+      <div class="animation" id="animationArea"></div>
     </div>
   </div>
-
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer"
-       style="min-height:28px; background:#0a1f33;" />
-
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px; background:#0a1f33;" />
   <script>
-    // Aladdin & Genie Wish Game Logic
-    const wishes = [
-      { wish: "A mountain of gold", outcome: "Genie: Gold is heavy! You get a tiny coin instead. 🪙" },
-      { wish: "A magic carpet ride", outcome: "Genie: Hold tight! You soar above Agrabah. 🏜️" },
-      { wish: "Endless falafel", outcome: "Genie: Delicious! But you get one falafel for now. 🧆" },
-      { wish: "Become a prince", outcome: "Genie: You look royal! But only for a minute. 👑" },
-      { wish: "Three more wishes", outcome: "Genie: Nice try! Only one wish per game. 😜" }
+    const aladdinBtn = document.getElementById('aladdinBtn');
+    const genieBtn = document.getElementById('genieBtn');
+    const animationArea = document.getElementById('animationArea');
+    const status = document.getElementById('status');
+    const aladdinTaunts = [
+      "Aladdin soars above Agrabah! 🧞‍♂️✨",
+      "The carpet whirls with magic!",
+      "You feel the wind of adventure!"
     ];
-    const taunts = [
-      "Genie: You never know what you'll get!",
-      "Aladdin: I hope Genie is feeling generous...",
-      "Genie: Choose wisely, Aladdin!",
-      "Aladdin: Let's see some magic!",
-      "Genie: Ready for your wish?"
+    const genieTaunts = [
+      "Genie bursts out in a swirl of teal!",
+      "Your wish is granted! 🧞",
+      "Genie sparkles with power!"
     ];
-    let gameActive = true;
-    function showChoices() {
-      const choicesDiv = document.getElementById('choices');
-      choicesDiv.innerHTML = '';
-      wishes.forEach((w, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.textContent = w.wish;
-        btn.onclick = () => handleWish(idx);
-        choicesDiv.appendChild(btn);
-      });
-      document.getElementById('result').textContent = taunts[Math.floor(Math.random()*taunts.length)];
-      document.getElementById('restartBtn').style.display = 'none';
-      gameActive = true;
+    function randomTaunt(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
-    function handleWish(idx) {
-      if (!gameActive) return;
-      const resultDiv = document.getElementById('result');
-      resultDiv.textContent = wishes[idx].outcome;
-      document.getElementById('choices').innerHTML = '';
-      document.getElementById('restartBtn').style.display = 'inline-block';
-      gameActive = false;
-    }
-    document.getElementById('restartBtn').onclick = showChoices;
-    window.onload = showChoices;
+    aladdinBtn.addEventListener('click', () => {
+      animationArea.innerHTML = '<div class="aladdin-fly"></div>';
+      status.textContent = randomTaunt(aladdinTaunts);
+    });
+    genieBtn.addEventListener('click', () => {
+      animationArea.innerHTML = '<div class="genie-pop"></div>';
+      status.textContent = randomTaunt(genieTaunts);
+    });
   </script>
-
 </body>
 </html>
