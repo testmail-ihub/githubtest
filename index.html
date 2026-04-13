@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spokes AI Agents | Knowledge26 Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -38,13 +38,13 @@
       font-size: 2rem;
       font-weight: 700;
       color: #e8f4f8;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       letter-spacing: 1px;
     }
     .status {
       font-size: 1.1rem;
       color: #7a9bb5;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       min-height: 24px;
       text-align: center;
     }
@@ -52,7 +52,7 @@
       display: grid;
       grid-template-columns: repeat(3, 60px);
       grid-template-rows: repeat(3, 60px);
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 24px;
     }
     .cell {
@@ -84,21 +84,21 @@
       margin-top: 12px;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 10px #62d84e;
+      box-shadow: 0 0 8px #00c7b1;
     }
     .restart-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 20px #00c7b1;
+      box-shadow: 0 0 16px #62d84e;
     }
     @media (max-width: 600px) {
       .game-card {
-        padding: 16px 6px;
+        padding: 18px 6px;
         max-width: 98vw;
       }
       .board {
         grid-template-columns: repeat(3, 40px);
         grid-template-rows: repeat(3, 40px);
-        gap: 5px;
+        gap: 6px;
       }
       .cell {
         font-size: 1.3rem;
@@ -110,8 +110,8 @@
   <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px; background:#061525;" />
   <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
     <div class="game-card">
-      <div class="game-title">Tic-Tac-Toe</div>
-      <div class="status" id="status">Player X's turn</div>
+      <div class="game-title">Tic-Tac-Toe 🧞</div>
+      <div class="status" id="status">Your turn! Click a cell to play.</div>
       <div class="board" id="board">
         <div class="cell" id="cell-0"></div>
         <div class="cell" id="cell-1"></div>
@@ -128,70 +128,108 @@
   </div>
   <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px; background:#0a1f33;" />
   <script>
+    // Tic-Tac-Toe game logic
     const board = Array(9).fill(null);
-    let currentPlayer = 'X';
+    let userTurn = true;
     let gameActive = true;
-    const statusDiv = document.getElementById('status');
+    const statusEl = document.getElementById('status');
     const cells = Array.from({length:9}, (_,i) => document.getElementById('cell-'+i));
     const restartBtn = document.getElementById('restart');
-
-    function checkWinner() {
-      const winPatterns = [
-        [0,1,2],[3,4,5],[6,7,8], // rows
-        [0,3,6],[1,4,7],[2,5,8], // cols
-        [0,4,8],[2,4,6] // diags
+    const taunts = [
+      "Nice move!",
+      "I'm thinking...",
+      "Try to beat me!",
+      "System's turn!",
+      "You can't win every time!",
+      "Let's see what you got!",
+      "🧞 says: Good luck!"
+    ];
+    function renderBoard() {
+      for(let i=0;i<9;i++) {
+        cells[i].textContent = board[i] || '';
+        cells[i].style.pointerEvents = gameActive && userTurn && !board[i] ? 'auto' : 'none';
+      }
+    }
+    function checkWinner(b) {
+      const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
       ];
-      for (let pattern of winPatterns) {
-        const [a,b,c] = pattern;
-        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-          return board[a];
+      for(const [a,b1,c] of lines) {
+        if(b[a] && b[a]===b[b1] && b[a]===b[c]) return b[a];
+      }
+      return b.every(cell=>cell) ? 'draw' : null;
+    }
+    function userMove(idx) {
+      if(!gameActive || !userTurn || board[idx]) return;
+      board[idx] = 'X';
+      userTurn = false;
+      renderBoard();
+      const winner = checkWinner(board);
+      if(winner) endGame(winner);
+      else {
+        statusEl.textContent = taunts[Math.floor(Math.random()*taunts.length)];
+        setTimeout(systemMove, 700);
+      }
+    }
+    function systemMove() {
+      if(!gameActive) return;
+      // AI: win → block → center → corner → random
+      let move = findBestMove();
+      board[move] = 'O';
+      renderBoard();
+      const winner = checkWinner(board);
+      if(winner) endGame(winner);
+      else {
+        userTurn = true;
+        statusEl.textContent = "Your turn! Click a cell to play.";
+      }
+    }
+    function findBestMove() {
+      // Win
+      for(let i=0;i<9;i++){
+        if(!board[i]){
+          board[i]='O';
+          if(checkWinner(board)==='O'){board[i]=null;return i;}
+          board[i]=null;
         }
       }
-      return null;
-    }
-
-    function isDraw() {
-      return board.every(cell => cell) && !checkWinner();
-    }
-
-    function updateStatus() {
-      const winner = checkWinner();
-      if (winner) {
-        statusDiv.textContent = `Player ${winner} wins! 🎉`;
-        gameActive = false;
-      } else if (isDraw()) {
-        statusDiv.textContent = "It's a draw!";
-        gameActive = false;
-      } else {
-        statusDiv.textContent = `Player ${currentPlayer}'s turn`;
+      // Block
+      for(let i=0;i<9;i++){
+        if(!board[i]){
+          board[i]='X';
+          if(checkWinner(board)==='X'){board[i]=null;return i;}
+          board[i]=null;
+        }
       }
+      // Center
+      if(!board[4]) return 4;
+      // Corners
+      const corners=[0,2,6,8];
+      for(const c of corners) if(!board[c]) return c;
+      // Random
+      const empty = board.map((v,i)=>v?null:i).filter(v=>v!==null);
+      return empty[Math.floor(Math.random()*empty.length)];
     }
-
-    function handleCellClick(idx) {
-      if (!gameActive || board[idx]) return;
-      board[idx] = currentPlayer;
-      cells[idx].textContent = currentPlayer;
-      cells[idx].style.color = currentPlayer === 'X' ? '#62d84e' : '#00c7b1';
-      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-      updateStatus();
+    function endGame(winner) {
+      gameActive = false;
+      renderBoard();
+      if(winner==='draw') statusEl.textContent = "It's a draw!";
+      else if(winner==='X') statusEl.textContent = "You win! 🧞";
+      else statusEl.textContent = "System wins! 🧞";
+      cells.forEach(cell=>cell.style.pointerEvents='none');
     }
-
-    cells.forEach((cell, idx) => {
-      cell.addEventListener('click', () => handleCellClick(idx));
-    });
-
-    restartBtn.addEventListener('click', () => {
-      for (let i=0; i<9; i++) {
-        board[i] = null;
-        cells[i].textContent = '';
-        cells[i].style.color = '#e8f4f8';
-      }
-      currentPlayer = 'X';
+    function restartGame() {
+      for(let i=0;i<9;i++) board[i]=null;
+      userTurn = true;
       gameActive = true;
-      updateStatus();
-    });
-
-    updateStatus();
+      statusEl.textContent = "Your turn! Click a cell to play.";
+      renderBoard();
+    }
+    cells.forEach((cell,i)=>cell.addEventListener('click',()=>userMove(i)));
+    restartBtn.addEventListener('click',restartGame);
+    renderBoard();
   </script>
 </body>
 </html>
