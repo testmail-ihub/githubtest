@@ -3,142 +3,73 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spokes AI Agents | Knowledge26 Lab</title>
+  <title>Aladdin's AI-mation Adventure</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: #061525;
-      color: #e8f4f8;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-    .header-img, .footer-img {
-      width: 100%;
-      display: block;
-      flex-shrink: 0;
-    }
-    .game-card {
-      background: rgba(10,31,51,0.85);
-      border: 1px solid rgba(98,216,78,0.15);
-      border-radius: 12px;
-      backdrop-filter: blur(8px);
-      padding: 32px 24px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(98,216,78,0.25);
-    }
-    .game-title {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: #62d84e;
-    }
-    .choice-btn {
-      background: linear-gradient(135deg, #62d84e, #00c7b1);
-      color: #061525;
-      font-weight: 700;
-      border-radius: 10px;
-      padding: 12px 24px;
-      margin: 12px 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px #00c7b1;
-    }
-    .choice-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 20px #62d84e;
-    }
-    .animation {
-      margin-top: 24px;
-      min-height: 120px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .aladdin-fly {
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle at 40px 40px, #62d84e 60%, #00c7b1 100%);
-      border-radius: 50%;
-      position: relative;
-      animation: fly 1.2s ease-in-out;
-    }
-    @keyframes fly {
-      0% { transform: translateY(60px) scale(0.7); opacity: 0.5; }
-      60% { transform: translateY(-20px) scale(1.1); opacity: 1; }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .genie-pop {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #00c7b1 60%, #62d84e 100%);
-      border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
-      position: relative;
-      animation: pop 1.2s cubic-bezier(.68,-0.55,.27,1.55);
-    }
-    @keyframes pop {
-      0% { transform: scale(0.5); opacity: 0.5; }
-      60% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .status {
-      color: #7a9bb5;
-      font-size: 1rem;
-      margin-top: 12px;
-      min-height: 24px;
-    }
-    @media (max-width: 600px) {
-      .game-card { padding: 16px 8px; }
-      .game-title { font-size: 1.3rem; }
-      .animation { min-height: 80px; }
-    }
+    body{font-family:'Outfit',sans-serif;background:#061525;color:#e8f4f8;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+    .header-img,.footer-img{width:100%;display:block;flex-shrink:0;min-height:140px;}
+    .footer-img{min-height:28px;background:#0a1f33;}
+    .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+    .card{background:rgba(10,31,51,0.85);border:1px solid rgba(98,216,78,0.15);border-radius:12px;backdrop-filter:blur(8px);padding:32px 28px;box-shadow:0 0 20px rgba(98,216,78,0.08);max-width:340px;width:100%;text-align:center;}
+    .btn{background:linear-gradient(135deg,#62d84e,#00c7b1);color:#061525;font-weight:700;border:none;border-radius:10px;padding:12px 24px;margin:10px 0 0 0;cursor:pointer;font-size:1.1rem;transition:.2s;box-shadow:0 2px 8px rgba(0,199,177,0.08);}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px #62d84e44;}
+    .emoji{font-size:3.5rem;display:inline-block;}
+    .fly{animation:fly 2.5s linear infinite, bob 1.2s ease-in-out infinite;position:relative;left:-40%;}
+    @keyframes fly{0%{left:-40%;}100%{left:40%;}}
+    @keyframes bob{0%,100%{top:0;}50%{top:-18px;}}
+    .shake{animation:shake .18s 6 linear;}
+    @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+    .genie{font-size:3.5rem;display:block;transform:scale(0) translateY(40px);animation:rise .7s .95s cubic-bezier(.6,1.7,.6,1) forwards;}
+    @keyframes rise{0%{transform:scale(0) translateY(40px);}100%{transform:scale(1) translateY(-38px);}}
+    .hidden{display:none!important;}
+    .msg{margin:18px 0 0 0;color:#62d84e;font-weight:600;}
   </style>
 </head>
 <body>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px; background:#061525;" />
-  <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
-    <div class="game-card">
-      <div class="game-title">Aladdin & Genie Game</div>
-      <div class="status" id="status">Choose your adventure!</div>
-      <button class="choice-btn" id="aladdinBtn">Ride the Magic Carpet</button>
-      <button class="choice-btn" id="genieBtn">Summon the Genie</button>
-      <div class="animation" id="animationArea"></div>
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="background:#061525;" />
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin-bottom:18px;">Aladdin's AI-mation Adventure</h2>
+      <div id="choices">
+        <button class="btn" id="carpetBtn">Ride the Magic Carpet</button>
+        <button class="btn" id="genieBtn">Summon the Genie</button>
+      </div>
+      <div id="carpetScene" class="hidden">
+        <span class="emoji fly">🧞‍♂️</span>
+        <div class="msg">Off to Agrabah!</div>
+        <button class="btn" id="back1">Back</button>
+      </div>
+      <div id="genieScene" class="hidden">
+        <span class="emoji" id="lamp">🪔</span>
+        <span class="genie hidden" id="genie">🧞</span>
+        <div class="msg">Your wish is my command!</div>
+        <button class="btn" id="back2">Back</button>
+      </div>
     </div>
   </div>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px; background:#0a1f33;" />
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="background:#0a1f33;" />
   <script>
-    const aladdinBtn = document.getElementById('aladdinBtn');
-    const genieBtn = document.getElementById('genieBtn');
-    const animationArea = document.getElementById('animationArea');
-    const status = document.getElementById('status');
-    const aladdinTaunts = [
-      "Aladdin soars above Agrabah! 🧞‍♂️✨",
-      "The carpet whirls with magic!",
-      "You feel the wind of adventure!"
-    ];
-    const genieTaunts = [
-      "Genie bursts out in a swirl of teal!",
-      "Your wish is granted! 🧞",
-      "Genie sparkles with power!"
-    ];
-    function randomTaunt(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-    aladdinBtn.addEventListener('click', () => {
-      animationArea.innerHTML = '<div class="aladdin-fly"></div>';
-      status.textContent = randomTaunt(aladdinTaunts);
-    });
-    genieBtn.addEventListener('click', () => {
-      animationArea.innerHTML = '<div class="genie-pop"></div>';
-      status.textContent = randomTaunt(genieTaunts);
-    });
+    const q = s=>document.querySelector(s);
+    q('#carpetBtn').onclick=()=>{
+      q('#choices').classList.add('hidden');
+      q('#carpetScene').classList.remove('hidden');
+    };
+    q('#genieBtn').onclick=()=>{
+      q('#choices').classList.add('hidden');
+      q('#genieScene').classList.remove('hidden');
+      const lamp=q('#lamp'),genie=q('#genie');
+      lamp.classList.add('shake');
+      setTimeout(()=>{
+        lamp.classList.remove('shake');
+        genie.classList.remove('hidden');
+      },1000);
+    };
+    q('#back1').onclick=q('#back2').onclick=()=>{
+      q('#carpetScene').classList.add('hidden');
+      q('#genieScene').classList.add('hidden');
+      q('#choices').classList.remove('hidden');
+      q('#genie').classList.add('hidden');
+    };
   </script>
 </body>
 </html>
