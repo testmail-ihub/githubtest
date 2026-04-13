@@ -1,75 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aladdin's AI-mation Adventure</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    body{font-family:'Outfit',sans-serif;background:#061525;color:#e8f4f8;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
-    .header-img,.footer-img{width:100%;display:block;flex-shrink:0;min-height:140px;}
-    .footer-img{min-height:28px;background:#0a1f33;}
-    .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-    .card{background:rgba(10,31,51,0.85);border:1px solid rgba(98,216,78,0.15);border-radius:12px;backdrop-filter:blur(8px);padding:32px 28px;box-shadow:0 0 20px rgba(98,216,78,0.08);max-width:340px;width:100%;text-align:center;}
-    .btn{background:linear-gradient(135deg,#62d84e,#00c7b1);color:#061525;font-weight:700;border:none;border-radius:10px;padding:12px 24px;margin:10px 0 0 0;cursor:pointer;font-size:1.1rem;transition:.2s;box-shadow:0 2px 8px rgba(0,199,177,0.08);}
-    .btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px #62d84e44;}
-    .emoji{font-size:3.5rem;display:inline-block;}
-    .fly{animation:fly 2.5s linear infinite, bob 1.2s ease-in-out infinite;position:relative;left:-40%;}
-    @keyframes fly{0%{left:-40%;}100%{left:40%;}}
-    @keyframes bob{0%,100%{top:0;}50%{top:-18px;}}
-    .shake{animation:shake .18s 6 linear;}
-    @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
-    .genie{font-size:3.5rem;display:block;transform:scale(0) translateY(40px);animation:rise .7s .95s cubic-bezier(.6,1.7,.6,1) forwards;}
-    @keyframes rise{0%{transform:scale(0) translateY(40px);}100%{transform:scale(1) translateY(-38px);}}
-    .hidden{display:none!important;}
-    .msg{margin:18px 0 0 0;color:#62d84e;font-weight:600;}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aladdin's AI-mation Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Outfit',sans-serif;background:#061525;color:#e8f4f8;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+.header-img,.footer-img{width:100%;display:block;flex-shrink:0;}
+.wrapper{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.cards{display:flex;gap:32px;}
+.card{background:rgba(10,31,51,0.85);border:1px solid rgba(98,216,78,0.15);border-radius:12px;padding:32px 24px;cursor:pointer;box-shadow:0 0 20px rgba(98,216,78,0.25);transition:transform .2s;}
+.card:hover{transform:translateY(-2px);}
+.btn{background:linear-gradient(135deg,#62d84e,#00c7b1);color:#061525;font-weight:700;border-radius:10px;padding:12px 24px;border:none;cursor:pointer;margin-top:24px;}
+.anim{display:flex;flex-direction:column;align-items:center;}
+@keyframes fly{0%{left:-120px;top:40px;}50%{top:10px;}100%{left:calc(100vw - 120px);top:40px;}}
+@keyframes shake{0%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-8px);}80%{transform:translateX(8px);}100%{transform:translateX(0);}}
+@keyframes genieRise{0%{transform:translateY(60px) scale(0);}100%{transform:translateY(0) scale(1);}}
+</style>
 </head>
 <body>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="background:#061525;" />
-  <div class="wrap">
-    <div class="card">
-      <h2 style="margin-bottom:18px;">Aladdin's AI-mation Adventure</h2>
-      <div id="choices">
-        <button class="btn" id="carpetBtn">Ride the Magic Carpet</button>
-        <button class="btn" id="genieBtn">Summon the Genie</button>
-      </div>
-      <div id="carpetScene" class="hidden">
-        <span class="emoji fly">🧞‍♂️</span>
-        <div class="msg">Off to Agrabah!</div>
-        <button class="btn" id="back1">Back</button>
-      </div>
-      <div id="genieScene" class="hidden">
-        <span class="emoji" id="lamp">🪔</span>
-        <span class="genie hidden" id="genie">🧞</span>
-        <div class="msg">Your wish is my command!</div>
-        <button class="btn" id="back2">Back</button>
-      </div>
-    </div>
-  </div>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="background:#0a1f33;" />
-  <script>
-    const q = s=>document.querySelector(s);
-    q('#carpetBtn').onclick=()=>{
-      q('#choices').classList.add('hidden');
-      q('#carpetScene').classList.remove('hidden');
-    };
-    q('#genieBtn').onclick=()=>{
-      q('#choices').classList.add('hidden');
-      q('#genieScene').classList.remove('hidden');
-      const lamp=q('#lamp'),genie=q('#genie');
-      lamp.classList.add('shake');
-      setTimeout(()=>{
-        lamp.classList.remove('shake');
-        genie.classList.remove('hidden');
-      },1000);
-    };
-    q('#back1').onclick=q('#back2').onclick=()=>{
-      q('#carpetScene').classList.add('hidden');
-      q('#genieScene').classList.add('hidden');
-      q('#choices').classList.remove('hidden');
-      q('#genie').classList.add('hidden');
-    };
-  </script>
+<img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px;background:#061525;" />
+<div class="wrapper">
+<div id="cards" class="cards">
+<div class="card" onclick="showCarpet()">Ride the Magic Carpet</div>
+<div class="card" onclick="showGenie()">Summon the Genie</div>
+</div>
+<div id="carpet" style="display:none;" class="anim">
+<img id="carpetImg" src="https://pngimg.com/d/aladdin_lamp/aladdin_lamp_PNG24.png" width="120" style="position:absolute;animation:fly 2s linear infinite;" onerror="this.style.display='none';document.getElementById('carpetEmoji').style.display='block';" />
+<div id="carpetEmoji" style="display:none;position:absolute;font-size:80px;animation:fly 2s linear infinite;">🧞‍♂️</div>
+<div style="margin-top:100px;">Off to Agrabah!</div>
+<button class="btn" onclick="back()">Back</button>
+</div>
+<div id="genie" style="display:none;" class="anim">
+<img id="lampImg" src="https://pngimg.com/d/aladdin_lamp/aladdin_lamp_PNG21.png" width="100" style="animation:shake 1s;" onerror="this.style.display='none';document.getElementById('lampEmoji').style.display='block';setTimeout(showGenieImg,1000);" />
+<div id="lampEmoji" style="display:none;font-size:60px;animation:shake 1s;">🧞‍♂️</div>
+<img id="genieImg" src="https://pngimg.com/d/aladdin_lamp/aladdin_lamp_PNG7.png" width="80" style="display:none;animation:genieRise 1s forwards;" onerror="this.style.display='none';document.getElementById('genieEmoji').style.display='block';" />
+<div id="genieEmoji" style="display:none;font-size:60px;animation:genieRise 1s forwards;">🧞</div>
+<div style="margin-top:80px;">Your wish is my command!</div>
+<button class="btn" onclick="back()">Back</button>
+</div>
+</div>
+<img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px;background:#0a1f33;" />
+<script>
+function showCarpet(){document.getElementById('cards').style.display='none';document.getElementById('carpet').style.display='flex';}
+function showGenie(){document.getElementById('cards').style.display='none';document.getElementById('genie').style.display='flex';setTimeout(showGenieImg,1000);}
+function showGenieImg(){var g=document.getElementById('genieImg');if(g){g.style.display='block';}}
+function back(){document.getElementById('carpet').style.display='none';document.getElementById('genie').style.display='none';document.getElementById('cards').style.display='flex';}
+</script>
 </body>
 </html>
