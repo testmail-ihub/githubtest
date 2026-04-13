@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spokes AI Agents | Knowledge26 Lab</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
@@ -27,9 +27,9 @@
       border-radius: 12px;
       backdrop-filter: blur(8px);
       padding: 32px 24px;
-      box-shadow: 0 0 20px rgba(98,216,78,0.25);
-      max-width: 420px;
+      max-width: 400px;
       width: 100%;
+      box-shadow: 0 0 20px rgba(98,216,78,0.25);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -37,199 +37,134 @@
     .game-title {
       font-size: 2rem;
       font-weight: 700;
-      color: #e8f4f8;
-      margin-bottom: 18px;
-      letter-spacing: 1px;
-    }
-    .status {
-      font-size: 1.1rem;
-      color: #7a9bb5;
+      color: #62d84e;
       margin-bottom: 16px;
-      min-height: 24px;
       text-align: center;
     }
-    .board {
-      display: grid;
-      grid-template-columns: repeat(3, 60px);
-      grid-template-rows: repeat(3, 60px);
-      gap: 10px;
+    .game-desc {
+      color: #7a9bb5;
+      font-size: 1rem;
       margin-bottom: 24px;
+      text-align: center;
     }
-    .cell {
-      background: rgba(6,21,37,0.8);
-      border: 1px solid rgba(98,216,78,0.2);
-      color: #e8f4f8;
-      border-radius: 8px;
-      font-size: 2.2rem;
-      font-weight: 600;
+    .choices {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 8px rgba(98,216,78,0.08);
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
     }
-    .cell:hover {
-      background: #0e2d47;
-      box-shadow: 0 0 12px #62d84e;
-    }
-    .restart-btn {
+    .choice-btn {
       background: linear-gradient(135deg, #62d84e, #00c7b1);
       color: #061525;
       font-weight: 700;
       border-radius: 10px;
       padding: 12px 24px;
       border: none;
-      font-size: 1rem;
-      margin-top: 12px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 8px #00c7b1;
+      font-size: 1rem;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 0 2px 8px rgba(98,216,78,0.15);
+    }
+    .choice-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px #62d84e;
+    }
+    .result {
+      font-size: 1.2rem;
+      color: #e8f4f8;
+      margin-top: 16px;
+      min-height: 32px;
+      text-align: center;
+    }
+    .restart-btn {
+      margin-top: 24px;
+      background: linear-gradient(135deg, #00c7b1, #62d84e);
+      color: #061525;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 10px 22px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.1s, box-shadow 0.1s;
+      box-shadow: 0 2px 8px rgba(98,216,78,0.15);
     }
     .restart-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 16px #62d84e;
+      box-shadow: 0 0 20px #00c7b1;
     }
     @media (max-width: 600px) {
       .game-card {
-        padding: 18px 6px;
+        padding: 18px 8px;
         max-width: 98vw;
       }
-      .board {
-        grid-template-columns: repeat(3, 40px);
-        grid-template-rows: repeat(3, 40px);
-        gap: 6px;
-      }
-      .cell {
+      .game-title {
         font-size: 1.3rem;
       }
     }
   </style>
 </head>
 <body>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px; background:#061525;" />
+
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header"
+       style="min-height:140px; background:#061525;" />
+
   <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;">
     <div class="game-card">
-      <div class="game-title">Tic-Tac-Toe 🧞</div>
-      <div class="status" id="status">Your turn! Click a cell to play.</div>
-      <div class="board" id="board">
-        <div class="cell" id="cell-0"></div>
-        <div class="cell" id="cell-1"></div>
-        <div class="cell" id="cell-2"></div>
-        <div class="cell" id="cell-3"></div>
-        <div class="cell" id="cell-4"></div>
-        <div class="cell" id="cell-5"></div>
-        <div class="cell" id="cell-6"></div>
-        <div class="cell" id="cell-7"></div>
-        <div class="cell" id="cell-8"></div>
-      </div>
-      <button class="restart-btn" id="restart">Restart Game</button>
+      <div class="game-title">Aladdin & Genie: Wish Game</div>
+      <div class="game-desc">Aladdin meets Genie! Choose a wish and see what Genie grants. Can you find the magic outcome?</div>
+      <div class="choices" id="choices"></div>
+      <div class="result" id="result"></div>
+      <button class="restart-btn" id="restartBtn" style="display:none;">Restart</button>
     </div>
   </div>
-  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px; background:#0a1f33;" />
+
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer"
+       style="min-height:28px; background:#0a1f33;" />
+
   <script>
-    // Tic-Tac-Toe game logic
-    const board = Array(9).fill(null);
-    let userTurn = true;
-    let gameActive = true;
-    const statusEl = document.getElementById('status');
-    const cells = Array.from({length:9}, (_,i) => document.getElementById('cell-'+i));
-    const restartBtn = document.getElementById('restart');
-    const taunts = [
-      "Nice move!",
-      "I'm thinking...",
-      "Try to beat me!",
-      "System's turn!",
-      "You can't win every time!",
-      "Let's see what you got!",
-      "🧞 says: Good luck!"
+    // Aladdin & Genie Wish Game Logic
+    const wishes = [
+      { wish: "A mountain of gold", outcome: "Genie: Gold is heavy! You get a tiny coin instead. 🪙" },
+      { wish: "A magic carpet ride", outcome: "Genie: Hold tight! You soar above Agrabah. 🏜️" },
+      { wish: "Endless falafel", outcome: "Genie: Delicious! But you get one falafel for now. 🧆" },
+      { wish: "Become a prince", outcome: "Genie: You look royal! But only for a minute. 👑" },
+      { wish: "Three more wishes", outcome: "Genie: Nice try! Only one wish per game. 😜" }
     ];
-    function renderBoard() {
-      for(let i=0;i<9;i++) {
-        cells[i].textContent = board[i] || '';
-        cells[i].style.pointerEvents = gameActive && userTurn && !board[i] ? 'auto' : 'none';
-      }
-    }
-    function checkWinner(b) {
-      const lines = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
-      for(const [a,b1,c] of lines) {
-        if(b[a] && b[a]===b[b1] && b[a]===b[c]) return b[a];
-      }
-      return b.every(cell=>cell) ? 'draw' : null;
-    }
-    function userMove(idx) {
-      if(!gameActive || !userTurn || board[idx]) return;
-      board[idx] = 'X';
-      userTurn = false;
-      renderBoard();
-      const winner = checkWinner(board);
-      if(winner) endGame(winner);
-      else {
-        statusEl.textContent = taunts[Math.floor(Math.random()*taunts.length)];
-        setTimeout(systemMove, 700);
-      }
-    }
-    function systemMove() {
-      if(!gameActive) return;
-      // AI: win → block → center → corner → random
-      let move = findBestMove();
-      board[move] = 'O';
-      renderBoard();
-      const winner = checkWinner(board);
-      if(winner) endGame(winner);
-      else {
-        userTurn = true;
-        statusEl.textContent = "Your turn! Click a cell to play.";
-      }
-    }
-    function findBestMove() {
-      // Win
-      for(let i=0;i<9;i++){
-        if(!board[i]){
-          board[i]='O';
-          if(checkWinner(board)==='O'){board[i]=null;return i;}
-          board[i]=null;
-        }
-      }
-      // Block
-      for(let i=0;i<9;i++){
-        if(!board[i]){
-          board[i]='X';
-          if(checkWinner(board)==='X'){board[i]=null;return i;}
-          board[i]=null;
-        }
-      }
-      // Center
-      if(!board[4]) return 4;
-      // Corners
-      const corners=[0,2,6,8];
-      for(const c of corners) if(!board[c]) return c;
-      // Random
-      const empty = board.map((v,i)=>v?null:i).filter(v=>v!==null);
-      return empty[Math.floor(Math.random()*empty.length)];
-    }
-    function endGame(winner) {
-      gameActive = false;
-      renderBoard();
-      if(winner==='draw') statusEl.textContent = "It's a draw!";
-      else if(winner==='X') statusEl.textContent = "You win! 🧞";
-      else statusEl.textContent = "System wins! 🧞";
-      cells.forEach(cell=>cell.style.pointerEvents='none');
-    }
-    function restartGame() {
-      for(let i=0;i<9;i++) board[i]=null;
-      userTurn = true;
+    const taunts = [
+      "Genie: You never know what you'll get!",
+      "Aladdin: I hope Genie is feeling generous...",
+      "Genie: Choose wisely, Aladdin!",
+      "Aladdin: Let's see some magic!",
+      "Genie: Ready for your wish?"
+    ];
+    let gameActive = true;
+    function showChoices() {
+      const choicesDiv = document.getElementById('choices');
+      choicesDiv.innerHTML = '';
+      wishes.forEach((w, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = w.wish;
+        btn.onclick = () => handleWish(idx);
+        choicesDiv.appendChild(btn);
+      });
+      document.getElementById('result').textContent = taunts[Math.floor(Math.random()*taunts.length)];
+      document.getElementById('restartBtn').style.display = 'none';
       gameActive = true;
-      statusEl.textContent = "Your turn! Click a cell to play.";
-      renderBoard();
     }
-    cells.forEach((cell,i)=>cell.addEventListener('click',()=>userMove(i)));
-    restartBtn.addEventListener('click',restartGame);
-    renderBoard();
+    function handleWish(idx) {
+      if (!gameActive) return;
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = wishes[idx].outcome;
+      document.getElementById('choices').innerHTML = '';
+      document.getElementById('restartBtn').style.display = 'inline-block';
+      gameActive = false;
+    }
+    document.getElementById('restartBtn').onclick = showChoices;
+    window.onload = showChoices;
   </script>
+
 </body>
 </html>
