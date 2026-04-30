@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spokes AI Agents | Knowledge26 Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Outfit',sans-serif;background:#061525;color:#e8f4f8;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+    .header-img,.footer-img{width:100%;display:block;flex-shrink:0;}
+    .quiz-card{background:rgba(10,31,51,0.85);border:1px solid rgba(98,216,78,0.15);border-radius:12px;padding:32px 24px;max-width:420px;width:100%;box-shadow:0 0 20px rgba(98,216,78,0.08);}
+    .quiz-title{font-size:1.5rem;font-weight:700;color:#e8f4f8;margin-bottom:16px;text-align:center;}
+    .question{font-size:1.1rem;font-weight:500;color:#e8f4f8;margin-bottom:12px;}
+    .options{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+    .option-btn{background:linear-gradient(135deg,#62d84e,#00c7b1);color:#061525;font-weight:700;border:none;border-radius:10px;padding:12px 24px;cursor:pointer;transition:transform .1s;}
+    .option-btn:hover{transform:translateY(-2px);box-shadow:0 0 8px #62d84e;}
+    .feedback{font-size:1rem;color:#7a9bb5;margin-bottom:12px;text-align:center;min-height:24px;}
+    .score{font-size:1.2rem;font-weight:600;color:#62d84e;margin-bottom:16px;text-align:center;}
+    .restart-btn{background:linear-gradient(135deg,#62d84e,#00c7b1);color:#061525;font-weight:700;border:none;border-radius:10px;padding:12px 24px;cursor:pointer;margin-top:12px;}
+    @media(max-width:600px){.quiz-card{padding:18px 8px;max-width:98vw;}}
+  </style>
+</head>
+<body>
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/header-banner.jpg" class="header-img" alt="Header" style="min-height:140px;background:#061525;" />
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;">
+    <div class="quiz-card" id="quiz">
+      <div class="quiz-title">ServiceNow Releases Quiz</div>
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="score" id="score"></div>
+      <button class="restart-btn" id="restart" style="display:none;">Restart Quiz</button>
+    </div>
+  </div>
+  <img src="https://raw.githubusercontent.com/testmail-ihub/spokes-ai-assets/main/footer-banner.jpg" class="footer-img" alt="Footer" style="min-height:28px;background:#0a1f33;" />
+  <script>
+    const quizData=[
+      {q:"Which ServiceNow release introduced Flow Designer?",o:["Kingston","London","Madrid","Orlando"],a:1},
+      {q:"What is the codename for the ServiceNow release in 2020?",o:["Paris","Orlando","Madrid","Quebec"],a:0},
+      {q:"Which release added Virtual Agent?",o:["London","Madrid","Orlando","Paris"],a:2},
+      {q:"What feature was first available in the Madrid release?",o:["Mobile App","Flow Designer","Virtual Agent","Performance Analytics"],a:0},
+      {q:"Which release is known for introducing Now Mobile?",o:["Orlando","Paris","Madrid","Quebec"],a:1}
+    ];
+    let current=0,score=0,answered=false;
+    const qEl=document.getElementById('question'),
+          oEl=document.getElementById('options'),
+          fEl=document.getElementById('feedback'),
+          sEl=document.getElementById('score'),
+          rBtn=document.getElementById('restart');
+    function showQ(){
+      qEl.textContent=quizData[current].q;
+      oEl.innerHTML='';
+      fEl.textContent='';
+      sEl.textContent='';
+      answered=false;
+      quizData[current].o.forEach((opt,i)=>{
+        const btn=document.createElement('button');
+        btn.className='option-btn';
+        btn.textContent=opt;
+        btn.onclick=()=>answer(i);
+        oEl.appendChild(btn);
+      });
+    }
+    function answer(i){
+      if(answered)return;
+      answered=true;
+      const correct=quizData[current].a;
+      if(i===correct){
+        fEl.textContent='Correct!';
+        score++;
+      }else{
+        fEl.textContent='Wrong! Correct answer: '+quizData[current].o[correct];
+      }
+      setTimeout(nextQ,1200);
+    }
+    function nextQ(){
+      current++;
+      if(current<quizData.length){
+        showQ();
+      }else{
+        showScore();
+      }
+    }
+    function showScore(){
+      qEl.textContent='Quiz Complete!';
+      oEl.innerHTML='';
+      fEl.textContent='';
+      sEl.textContent='Your score: '+score+' / '+quizData.length;
+      rBtn.style.display='inline-block';
+    }
+    rBtn.onclick=()=>{
+      current=0;score=0;rBtn.style.display='none';showQ();
+    };
+    showQ();
+  </script>
+</body>
+</html>
